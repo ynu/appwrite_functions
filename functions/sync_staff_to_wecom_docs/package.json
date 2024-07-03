@@ -17,6 +17,7 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.12",
     "@types/memory-cache": "^0.2.5",
     "@types/node": "^20.14.9",
     "prettier": "^3.2.5",

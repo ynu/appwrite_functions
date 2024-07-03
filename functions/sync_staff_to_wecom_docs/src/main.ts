@@ -154,6 +154,7 @@ async function fill_jzg_to_sheet(
     // 如果没有传递 DOC_IDS 则创建一个名为 教职工信息表-部门名称 的文档
     if (!dep_id) {
       let res = await Doc.create(
+        // @ts-ignore:next-line TODO: need to fix the type definition of remove_null_undefined_values
         remove_null_undefined_values({
           spaceid,
           fatherid,
@@ -364,8 +365,10 @@ async function fill_jzg_to_sheet(
           },
         };
       });
+      // @ts-ignore:next-line TODO: need to fix the type definition of SmartSheet.Record.update
       res = await SmartSheet.Record.update({ docid, sheet_id, records }, options);
       statistic.update = records.length;
+      // @ts-ignore:next-line TODO: need to fix the type definition of SmartSheet.Record.update
       logger.info(`Sheet for ${dep_name} update ${res.records?.length} records with response ${JSON.stringify(res)}`);
       // 删除多余的记录
       if (remove_irrelevant_records) {
