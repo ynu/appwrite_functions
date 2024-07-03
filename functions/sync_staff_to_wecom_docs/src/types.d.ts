@@ -69,72 +69,74 @@ declare global {
     zgh?: string[];
   }
 
+  interface JZG_DETAIL {
+    /**
+     * 组织机构代码
+     */
+    YXDM: string;
+    /**
+     * 民族代码
+     */
+    MZDM: string;
+    /**
+     * 姓名
+     */
+    XM: string;
+    /**
+     * 政治面貌代码
+     */
+    ZZMMDM: string;
+    /**
+     * 当前状态代码
+     */
+    DQZTDM: string;
+    /**
+     * 职工号
+     */
+    ZGH: string;
+    /**
+     * 用人方式代码
+     */
+    YRFSDM: string;
+    /**
+     * 最高学历代码
+     */
+    ZGXLDM: string;
+    /**
+     * 专业技术职务级别代码
+     */
+    ZYJSZWJBDM: string | null;
+    /**
+     * 额外代码名称信息
+     */
+    /**
+     * 民族名称
+     */
+    MZMC?: string;
+    /**
+     * 政治面貌名称
+     */
+    ZZMMMC?: string;
+    /**
+     * 当前状态名称
+     */
+    DQZTMC?: string;
+    /**
+     * 用人方式名称
+     */
+    YRFSMC?: string;
+    /**
+     * 最高学历名称
+     */
+    XLMC?: string;
+    /**
+     * 专业技术职务级别名称
+     */
+    ZYJSZWJBMC?: string;
+  }
+
   interface DETAIL_JZG_RESPONSE extends GENERAL_RESPONSE {
-    data: {
-      /**
-       * 组织机构代码
-       */
-      YXDM: string;
-      /**
-       * 民族代码
-       */
-      MZDM: string;
-      /**
-       * 姓名
-       */
-      XM: string;
-      /**
-       * 政治面貌代码
-       */
-      ZZMMDM: string;
-      /**
-       * 当前状态代码
-       */
-      DQZTDM: string;
-      /**
-       * 职工号
-       */
-      ZGH: string;
-      /**
-       * 用人方式代码
-       */
-      YRFSDM: string;
-      /**
-       * 最高学历代码
-       */
-      ZGXLDM: string;
-      /**
-       * 专业技术职务级别代码
-       */
-      ZYJSZWJBDM: string | null;
-      /**
-       * 额外代码名称信息
-       */
-      /**
-       * 民族名称
-       */
-      MZMC?: string;
-      /**
-       * 政治面貌名称
-       */
-      ZZMMMC?: string;
-      /**
-       * 当前状态名称
-       */
-      DQZTMC?: string;
-      /**
-       * 用人方式名称
-       */
-      YRFSMC?: string;
-      /**
-       * 最高学历名称
-       */
-      XLMC?: string;
-      /**
-       * 专业技术职务级别名称
-       */
-      ZYJSZWJBMC?: string;
-    }[];
+    data: JZG_DETAIL[];
   }
 
   interface DM_PARAMS {

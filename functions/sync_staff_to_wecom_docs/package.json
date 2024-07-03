@@ -12,7 +12,9 @@
   "dependencies": {
     "appwrite": "^15.0.0",
     "memory-cache": "^0.2.0",
-    "node-appwrite": "^13.0.0"
+    "node-appwrite": "^13.0.0",
+    "wecom-wedoc": "^2.1.0",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@types/memory-cache": "^0.2.5",
