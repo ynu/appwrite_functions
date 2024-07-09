@@ -1,5 +1,5 @@
 {
-    "projectId": "6673a3ae88d572756197",
+    "projectId": "668cae50002a306e92b4",
     "projectName": "default",
     "functions": [
         {
@@ -21,8 +21,8 @@
             "path": "functions/hi"
         },
         {
-            "$id": "6673e0bb577143683a7b",
-            "name": "sync_staff_to_wecom_docs",
+            "$id": "sync-staff-to-wecom-docs",
+            "name": "sync-staff-to-wecom-docs",
             "runtime": "node-20.0",
             "execute": [],
             "events": [],
