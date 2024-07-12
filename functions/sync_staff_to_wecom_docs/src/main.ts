@@ -15,10 +15,9 @@ class AppwriteConsole extends Transport {
   _log: any;
   _error: any;
 
-  constructor(options: any = {log: console.log, error: console.error}) {
+  constructor({ log, error, ...options }: any = { log: console.log, error: console.error }) {
     // pase options exclued log and error to super to avoid formating not working as expected issues
-    const {log, error, ..._options} = options;
-    super(_options);
+    super(options);
     this._log = log || console.log;
     this._error = error || console.error;
   }
@@ -40,7 +39,7 @@ class AppwriteConsole extends Transport {
 };
 
 // define a default logger which use console.log, console.error as default
-let logger: winston.Logger | { verbose: any, info: any, error: any, add?: any } = { verbose: console.log ,info: console.log, error: console.error };
+let logger: winston.Logger | { verbose: any, info: any, error: any, add?: any } = { verbose: console.log, info: console.log, error: console.error };
 
 logger.info(`You are running in ${process.env.NODE_ENV === 'development' ? 'development' : 'production'} mode!`);
 
@@ -474,7 +473,7 @@ function configLogger({ log, error }: { log: LOG_TYPE; error: ERROR_TYPE }) {
   });
   if (process.env.NODE_ENV !== 'production') {
     // logger.add(new winston.transports.Console());
-    logger.add(new AppwriteConsole({log, error}));
+    logger.add(new AppwriteConsole({ log, error }));
   }
   return logger;
 }
@@ -525,7 +524,7 @@ export default async ({ req, res, log, error }: { req: REQ_TYPE; res: RES_TYPE; 
 
     // 保存/更新dep_id, docid, sheet_id到数据库
     save_docid_and_sheet_id(client, dep, doc_ids, sheet_ids);
-    
+
     return res.json({ success: true, statistics });
   } catch (error) {
     console.error(error);
