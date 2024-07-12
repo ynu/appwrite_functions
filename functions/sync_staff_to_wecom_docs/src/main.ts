@@ -4,34 +4,42 @@ import { template, remove_null_undefined_values } from './utilities.js';
 import { Doc, SmartSheet } from 'wecom-wedoc';
 import { FieldType } from 'wecom-wedoc/dist/smart-sheet-field.js';
 import winston from 'winston';
+import Transport from 'winston-transport';
+import { LEVEL, MESSAGE } from 'triple-beam';
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.align(),
-    winston.format.timestamp({ format: 'YYYY-MM-DD T hh:mm:ss.sss A' }),
-    winston.format.printf(({ level, message, timestamp, label }) => {
-      return `${level.toUpperCase()} | ${timestamp} | ${message}`;
-    })
-  ),
-  defaultMeta: { service: 'user-service' },
-  transports: [
-    //
-    // - Write all logs with importance level of `error` or less to `error.log`
-    // - Write all logs with importance level of `info` or less to `combined.log`
-    //
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' }),
-  ],
-});
+/**
+ * Define a custom winston transport for Appwrite logging
+ * @see https://github.com/winstonjs/winston?tab=readme-ov-file#adding-custom-transports
+ */
+class AppwriteConsole extends Transport {
+  _log: any;
+  _error: any;
 
-//
-// If we're not in production then log to the `console` with the format:
-// `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
-//
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console());
-}
+  constructor(opts: any = {log: console.log, error: console.error}) {
+    // pase empty object to super to avoid formating not working as expected
+    super();
+    this._log = opts.log
+    this._error = opts.error;
+  }
+
+  log(info: any, callback: any) {
+    setImmediate(() => {
+      this.emit('logged', info);
+    });
+    if (['error', 'warn'].includes(info[LEVEL])) {
+      this._error(info[MESSAGE])
+    }
+    else {
+      this._log(info[MESSAGE])
+    }
+    if (callback) {
+      callback(); // eslint-disable-line callback-return
+    }
+  }
+};
+
+// define a default logger which use console.log, console.error as default
+let logger: winston.Logger | { verbose: any, info: any, error: any, add?: any } = { verbose: console.log ,info: console.log, error: console.error };
 
 logger.info(`You are running in ${process.env.NODE_ENV === 'development' ? 'development' : 'production'} mode!`);
 
@@ -443,7 +451,36 @@ async function get_config(client: Client) {
   }));
 }
 
+function configLogger({ log, error }: { log: LOG_TYPE; error: ERROR_TYPE }) {
+  const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+      winston.format.align(),
+      winston.format.timestamp({ format: 'YYYY-MM-DD T hh:mm:ss.sss A' }),
+      winston.format.printf(({ level, message, timestamp, label }) => {
+        return `${level.toUpperCase()} | ${timestamp} | ${message}`;
+      })
+    ),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+      //
+      // - Write all logs with importance level of `error` or less to `error.log`
+      // - Write all logs with importance level of `info` or less to `combined.log`
+      //
+      new winston.transports.File({ filename: 'error.log', level: 'error' }),
+      new winston.transports.File({ filename: 'combined.log' }),
+    ],
+  });
+  if (process.env.NODE_ENV !== 'production') {
+    // logger.add(new winston.transports.Console());
+    logger.add(new AppwriteConsole({log, error}));
+  }
+  return logger;
+}
+
 export default async ({ req, res, log, error }: { req: REQ_TYPE; res: RES_TYPE; log: LOG_TYPE; error: ERROR_TYPE }) => {
+  // config logger with log and error provided by Appwrite
+  logger = configLogger({ log, error });
   // setKey is optional if you deploy the function and run it in the Appwrite instance.
   // setKey is only available in node-appwrite package
   // For local development, you need use node-appwrite package and setKey to configure the client
@@ -487,7 +524,7 @@ export default async ({ req, res, log, error }: { req: REQ_TYPE; res: RES_TYPE; 
 
     // 保存/更新dep_id, docid, sheet_id到数据库
     save_docid_and_sheet_id(client, dep, doc_ids, sheet_ids);
-
+    
     return res.json({ success: true, statistics });
   } catch (error) {
     console.error(error);
