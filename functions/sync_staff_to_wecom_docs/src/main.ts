@@ -15,11 +15,12 @@ class AppwriteConsole extends Transport {
   _log: any;
   _error: any;
 
-  constructor(opts: any = {log: console.log, error: console.error}) {
-    // pase empty object to super to avoid formating not working as expected
-    super();
-    this._log = opts.log
-    this._error = opts.error;
+  constructor(options: any = {log: console.log, error: console.error}) {
+    // pase options exclued log and error to super to avoid formating not working as expected issues
+    const {log, error, ..._options} = options;
+    super(_options);
+    this._log = log || console.log;
+    this._error = error || console.error;
   }
 
   log(info: any, callback: any) {
