@@ -4,32 +4,35 @@ import { Client, Users } from 'node-appwrite';
 export default async ({ req, res, log, error }) => {
   // You can use the Appwrite SDK to interact with other services
   // For this example, we're using the Users service
-  const client = new Client()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
-    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
-  const users = new Users(client);
+  // const client = new Client()
+  //   .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
+  //   .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
+  //   .setKey(req.headers['x-appwrite-key'] ?? '');
+  // const users = new Users(client);
 
-  try {
-    const response = await users.list();
-    // Log messages and errors to the Appwrite Console
-    // These logs won't be seen by your end users
-    log(`Total users: ${response.total}`);
-  } catch(err) {
-    error("Could not list users: " + err.message);
-  }
+  // try {
+  //   const response = await users.list();
+  //   // Log messages and errors to the Appwrite Console
+  //   // These logs won't be seen by your end users
+  //   log(`Total users: ${response.total}`);
+  // } catch(err) {
+  //   error("Could not list users: " + err.message);
+  // }
 
   // The req object contains the request data
-  if (req.path === "/ping") {
+  if (req.path === "/metrics") {
     // Use res object to respond with text(), json(), or binary()
     // Don't forget to return a response!
-    return res.text("Pong");
-  }
 
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
-};
+    // use random 1~100 to mock metric value
+    const max = 100;
+    const min = 1;
+    const value = Math.floor(Math.random() * (max - min + 1) + min);
+    return res.text(`
+# HELP simple_gauge_metric Description of simple_gauge_metric
+# TYPE simple_gauge_metric gauge
+simple_gauge_metric{label="simple"} ${value}
+    `, 200, { "content-type": "text/html" });
+  };
+  return res.text("OK");
+}
