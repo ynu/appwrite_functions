@@ -28,11 +28,14 @@ export default async ({ req, res, log, error }) => {
     const max = 100;
     const min = 1;
     const value = Math.floor(Math.random() * (max - min + 1) + min);
-    return res.text(`
+    // https://appwrite.io/threads/1276400064436240384 
+    // res.text is not a function
+    return res.send(`
 # HELP simple_gauge_metric Description of simple_gauge_metric
 # TYPE simple_gauge_metric gauge
 simple_gauge_metric{label="simple"} ${value}
     `, 200, { "content-type": "text/html" });
   };
-  return res.text("OK");
+  console.info(req, res)
+  return res.send("OK");
 }
