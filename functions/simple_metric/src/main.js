@@ -1,5 +1,10 @@
 import { Client, Users } from 'node-appwrite';
 
+function stripIndent(strings, ...values) {
+  const raw = strings.raw.map(str => str.replace(/\\n[ \t]+/g, '\n')).join('');
+  return raw.trim().replace(/^[ \t]+/gm, '');
+}
+
 // This Appwrite function will be executed every time your function is triggered
 export default async ({ req, res, log, error }) => {
   // You can use the Appwrite SDK to interact with other services
@@ -30,7 +35,7 @@ export default async ({ req, res, log, error }) => {
     const value = Math.floor(Math.random() * (max - min + 1) + min);
     // https://appwrite.io/threads/1276400064436240384 
     // res.text is not a function
-    return res.send(`
+    return res.send(stripIndent`
 # HELP simple_gauge_metric Description of simple_gauge_metric
 # TYPE simple_gauge_metric gauge
 simple_gauge_metric{label="simple"} ${value}
