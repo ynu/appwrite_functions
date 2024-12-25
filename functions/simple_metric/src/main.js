@@ -34,7 +34,7 @@ export default async ({ req, res, log, error }) => {
 # HELP simple_gauge_metric Description of simple_gauge_metric
 # TYPE simple_gauge_metric gauge
 simple_gauge_metric{label="simple"} ${value}
-    `, 200, { "content-type": "text/html" });
+    `, 200, { "content-type": "text/plain" });
   };
   console.info(req, res)
   return res.send("OK");
